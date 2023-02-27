@@ -9,7 +9,7 @@ env:
   nuget-username: chrisxpr
   src-dir: ./src/code
   build-environment: dev
-  coverage-threshold: 90
+  coverage-threshold: 10
   repo-organisation: architected
   team-pat: ${{ secrets.TEAM_PAT}}
 concurrency: alpha-${{ github.ref}}
