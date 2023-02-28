@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlatformX.Settings.Tests", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlatformX.Secrets.Azure", "PlatformX.Secrets.Azure\PlatformX.Secrets.Azure.csproj", "{5B076690-85DA-4F06-9338-4711E8B20A69}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlatformX.Secrets.Mocks", "PlatformX.Secrets.Mocks\PlatformX.Secrets.Mocks.csproj", "{4E7B794D-5A0A-43A0-A968-F98BB1BAD643}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlatformX.Secrets.Shared", "PlatformX.Secrets.Shared\PlatformX.Secrets.Shared.csproj", "{C831A385-2F92-4D55-A035-5BB66DF17935}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlatformX.Settings.Shared", "PlatformX.Settings.Shared\PlatformX.Settings.Shared.csproj", "{9349A011-2A8A-48D2-8A56-B4F12E3C776C}"
@@ -35,10 +33,6 @@ Global
 		{5B076690-85DA-4F06-9338-4711E8B20A69}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B076690-85DA-4F06-9338-4711E8B20A69}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B076690-85DA-4F06-9338-4711E8B20A69}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4E7B794D-5A0A-43A0-A968-F98BB1BAD643}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4E7B794D-5A0A-43A0-A968-F98BB1BAD643}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4E7B794D-5A0A-43A0-A968-F98BB1BAD643}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4E7B794D-5A0A-43A0-A968-F98BB1BAD643}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C831A385-2F92-4D55-A035-5BB66DF17935}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C831A385-2F92-4D55-A035-5BB66DF17935}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C831A385-2F92-4D55-A035-5BB66DF17935}.Release|Any CPU.ActiveCfg = Release|Any CPU

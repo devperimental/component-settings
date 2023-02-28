@@ -1,9 +1,6 @@
-using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using PlatformX.Secrets.Shared.Behaviours;
-using PlatformX.Settings.Shared.Behaviours;
-using PlatformX.Settings.Shared.Config;
 using PlatformX.Settings.Types;
 
 namespace PlatformX.Settings.NTesting
@@ -14,14 +11,7 @@ namespace PlatformX.Settings.NTesting
         [SetUp]
         public void Init()
         {
-        }
 
-        public ProtectedRoleConfiguration InitProtectedRoleConfiguration()
-        {
-            var secretLoader = new Mock<ISecretLoader>();
-            var protectedRoleConfiguration = new ProtectedRoleConfiguration(secretLoader.Object);
-
-            return protectedRoleConfiguration;
         }
 
         [Test]
@@ -31,7 +21,10 @@ namespace PlatformX.Settings.NTesting
             var regionKey = "au";
             var locationKey = "est";
 
-            var protectedRoleConfiguration = InitProtectedRoleConfiguration();
+            var secretLoader = new Mock<ISecretLoader>();
+            secretLoader.Setup(c => c.LoadClientSecret(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns("CLIENT-SECRET-VALUE");
+
+            var protectedRoleConfiguration = new ProtectedRoleConfiguration(secretLoader.Object);
 
             var serviceKeyName = "IDENTITY-SERVICE-KEY";
             var requestServiceKey = protectedRoleConfiguration.GetSecretString(serviceKeyName, fulfilmentRoleType, regionKey, locationKey);

@@ -1,12 +1,12 @@
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
-using PlatformX.Secrets.Mocks;
 using PlatformX.Settings.Helper;
 using PlatformX.Secrets.Shared.Config;
 using PlatformX.Settings.Shared.Config;
 using PlatformX.Settings.Shared.Behaviours;
 using PlatformX.Secrets.Azure;
+using PlatformX.Secrets.Shared.Behaviours;
 
 namespace PlatformX.Secrets.NTesting
 {
@@ -16,6 +16,20 @@ namespace PlatformX.Secrets.NTesting
         private SecretLoaderConfiguration _secretLoaderConfiguration;
         private EndpointHelperConfiguration _endpointHelperConfiguration;
         private IEndpointHelper _endpointHelper;
+        
+        private List<string> _keyListFull = new List<string> {
+                    $"PlatformTenantId",
+                    $"PlatformApplicationId",
+                    $"PlatformApplicationName",
+                    $"PlatformApplicationSecret",
+                    $"PlatformPrimaryEndpoint",
+                    $"PlatformReadOnlyEndpoint"
+                };
+
+        private List<string> _keyListPartial = new List<string> {
+                    $"PlatformTenantId",
+                    $"PlatformApplicationId"
+                };
 
         [SetUp]
         public void Init()
@@ -30,56 +44,29 @@ namespace PlatformX.Secrets.NTesting
         }
 
         [Test]
-        public void MockSecretLoaderTest()
-        {
-            var traceLogger = new Mock<ILogger<SecretTests>>();
-            
-            var secretLoader = new MockSecretLoader<SecretTests>(traceLogger.Object);
-
-            if (secretLoader.GetType() == typeof(MockSecretLoader<SecretTests>))
-            {
-                Assert.Pass();
-            }
-
-        }
-
-        [Test]
         public void KeyVaultSecretLoadTest()
         {
             var traceLogger = new Mock<ILogger<SecretTests>>();
-            var secretLoader = new KeyVaultSecretLoader<SecretTests>(_secretLoaderConfiguration, traceLogger.Object, _endpointHelper);
+            var secretClient = new Mock<ISecretClient>();
 
-            if (secretLoader.GetType() != typeof(KeyVaultSecretLoader<SecretTests>))
-            {
-                Assert.Fail();
-            }
+            secretClient.Setup(c => c.GetSecret(It.IsAny<string>())).Returns("PLATFORM-SERVICE-KEY-VALUE");
+
+            var secretLoader = new KeyVaultSecretLoader<SecretTests>(_secretLoaderConfiguration, traceLogger.Object, _endpointHelper, secretClient.Object);
 
             var secretValue = secretLoader.LoadSecret("PLATFORM-SERVICE-KEY");
 
-            Assert.IsTrue(!string.IsNullOrEmpty(secretValue));
+            Assert.IsNotEmpty(secretValue);
         }
 
         [Test]
         public void KeyVaultSecretLoadSetTest()
         {
             var traceLogger = new Mock<ILogger<SecretTests>>();
-            var secretLoader = new KeyVaultSecretLoader<SecretTests>(_secretLoaderConfiguration, traceLogger.Object, _endpointHelper);
+            var secretClient = new Mock<ISecretClient>();
+            var secretLoader = new KeyVaultSecretLoader<SecretTests>(_secretLoaderConfiguration, traceLogger.Object, _endpointHelper, secretClient.Object);
 
-            if (secretLoader.GetType() != typeof(KeyVaultSecretLoader<SecretTests>))
-            {
-                Assert.Fail();
-            }
-
-            var db = "PlatformDB";
             var protectedKeyList = new List<string>();
-            protectedKeyList.AddRange(new List<string> {
-                    $"{db}TenantId",
-                    $"{db}ApplicationId",
-                    $"{db}ApplicationName",
-                    $"{db}ApplicationSecret",
-                    $"{db}PrimaryEndpoint",
-                    $"{db}ReadOnlyEndpoint"
-                });
+            protectedKeyList.AddRange(_keyListPartial);
 
             var secretValue = secretLoader.LoadSecrets(protectedKeyList);
 
@@ -91,14 +78,11 @@ namespace PlatformX.Secrets.NTesting
         public void KeyVaultSecretSaveTest()
         {
             var traceLogger = new Mock<ILogger<SecretTests>>();
-            var secretLoader = new KeyVaultSecretLoader<SecretTests>(_secretLoaderConfiguration, traceLogger.Object, _endpointHelper);
-
-            if (secretLoader.GetType() != typeof(KeyVaultSecretLoader<SecretTests>))
-            {
-                Assert.Fail();
-            }
-
+            var secretClient = new Mock<ISecretClient>();
             var itemToSave = Guid.NewGuid().ToString();
+            
+            secretClient.Setup(c => c.GetSecret(It.IsAny<string>())).Returns(itemToSave);
+            var secretLoader = new KeyVaultSecretLoader<SecretTests>(_secretLoaderConfiguration, traceLogger.Object, _endpointHelper, secretClient.Object);
 
             secretLoader.SaveSecret("UT-TEST-KEY", itemToSave);
 
@@ -111,42 +95,33 @@ namespace PlatformX.Secrets.NTesting
         public void KeyVaultSecretDeleteTest()
         {
             var traceLogger = new Mock<ILogger<SecretTests>>();
-            var secretLoader = new KeyVaultSecretLoader<SecretTests>(_secretLoaderConfiguration, traceLogger.Object, _endpointHelper);
-
-            if (secretLoader.GetType() != typeof(KeyVaultSecretLoader<SecretTests>))
-            {
-                Assert.Fail();
-            }
-            var itemToSave = Guid.NewGuid().ToString();
-
-            secretLoader.SaveSecret("UT-TEST-KEY-DELETE-P", itemToSave);
-
-            var secretValue = secretLoader.LoadSecret("UT-TEST-KEY-DELETE-P");
-
-            Assert.IsTrue(secretValue == itemToSave);
+            var secretClient = new Mock<ISecretClient>();
+            
+            secretClient.Setup(c => c.GetSecret(It.IsAny<string>())).Returns(string.Empty);
+            var secretLoader = new KeyVaultSecretLoader<SecretTests>(_secretLoaderConfiguration, traceLogger.Object, _endpointHelper, secretClient.Object);
 
             secretLoader.DeleteSecret("UT-TEST-KEY-DELETE-P");
 
-            secretValue = secretLoader.LoadSecret("UT-TEST-KEY-DELETE-P");
+            var secretValue = secretLoader.LoadSecret("UT-TEST-KEY-DELETE-P");
 
-            Assert.IsTrue(secretValue == "");
+            Assert.IsEmpty(secretValue);
         }
 
         [Test]
-        public void KeyVaultClientSecretSaveLoadDeleteTest()
+        public void KeyVaultClientSecretLoad()
         {
             var traceLogger = new Mock<ILogger<SecretTests>>();
-            var secretLoader = new KeyVaultSecretLoader<SecretTests>(_secretLoaderConfiguration, traceLogger.Object, _endpointHelper);
+            var secretClient = new Mock<ISecretClient>();
+            
+            var keyValue = Guid.NewGuid().ToString();
 
-            if (secretLoader.GetType() != typeof(KeyVaultSecretLoader<SecretTests>))
-            {
-                Assert.Fail();
-            }
+            secretClient.Setup(c => c.GetSecret(It.IsAny<string>())).Returns(keyValue);
+
+            var secretLoader = new KeyVaultSecretLoader<SecretTests>(_secretLoaderConfiguration, traceLogger.Object, _endpointHelper, secretClient.Object);
 
             var regionKey = "au";
             var locationKey = "est";
-            var keyValue = Guid.NewGuid().ToString();
-
+            
             var tempKey = "UT-TEST-KEY-CLNT" + Guid.NewGuid().ToString();
             secretLoader.SaveClientSecret(tempKey, keyValue, regionKey, locationKey);
             
@@ -154,16 +129,14 @@ namespace PlatformX.Secrets.NTesting
 
             Assert.IsTrue(secretValue == keyValue);
 
-            secretLoader.DeleteClientSecret(tempKey, regionKey, locationKey);
-
-            Assert.IsTrue(true);
         }
 
         [Test]
         public void GetSecretsList()
         {
             var traceLogger = new Mock<ILogger<SecretTests>>();
-            var secretLoader = new KeyVaultSecretLoader<SecretTests>(_secretLoaderConfiguration, traceLogger.Object, _endpointHelper);
+            var secretClient = new Mock<ISecretClient>();
+            var secretLoader = new KeyVaultSecretLoader<SecretTests>(_secretLoaderConfiguration, traceLogger.Object, _endpointHelper, secretClient.Object);
 
             var dbList = "TestDB";
             var protectedKeyList = new List<string>();

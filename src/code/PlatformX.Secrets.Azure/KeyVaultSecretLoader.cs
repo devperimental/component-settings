@@ -1,6 +1,4 @@
-﻿using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using PlatformX.Secrets.Shared.Behaviours;
 using PlatformX.Secrets.Shared.Config;
 using PlatformX.Settings.Shared.Behaviours;
@@ -14,15 +12,19 @@ namespace PlatformX.Secrets.Azure
         private readonly SecretLoaderConfiguration _secretLoaderConfiguration;
         private readonly ILogger<T> _traceLogger;
         private readonly IEndpointHelper _endpointHelper;
+        private readonly ISecretClient _secretClient;
         
-        public KeyVaultSecretLoader(SecretLoaderConfiguration secretLoaderConfiguration, ILogger<T> traceLogger, IEndpointHelper endpointHelper)
+        public KeyVaultSecretLoader(SecretLoaderConfiguration secretLoaderConfiguration, 
+            ILogger<T> traceLogger, 
+            IEndpointHelper endpointHelper,
+            ISecretClient secretClient)
         {
             _secretLoaderConfiguration = secretLoaderConfiguration ?? throw new ArgumentNullException(nameof(secretLoaderConfiguration));
             _traceLogger = traceLogger ?? throw new ArgumentNullException(nameof(traceLogger));
             _endpointHelper = endpointHelper ?? throw new ArgumentNullException(nameof(endpointHelper));
+            _secretClient = secretClient;
         }
 
-        #region Load
         public string LoadClientSecret(string secretName, string regionKey, string locationKey)
         {
             var keyVaultUrl = _endpointHelper.GetClientKeyVaultUrl(regionKey, locationKey);
@@ -48,20 +50,15 @@ namespace PlatformX.Secrets.Azure
 
             try
             {
-                var vault = GetSecretClient(keyVaultUrl, _secretLoaderConfiguration.TenantId);
-                var secret = vault.GetSecret(keyName);
-                returnValue = secret.Value.Value;
+                returnValue = _secretClient.GetSecret(keyName);
             }
             catch (Exception ex)
             {
-                _traceLogger.LogWarning($"Error retrieving key:{keyName}");
-                _traceLogger.LogError(ex.Message);
+                _traceLogger.LogError(ex, "Error retrieving {keyName}", keyName);
             }
 
             return returnValue;
         }
-
-        #endregion
 
         public Dictionary<string, string> LoadSecrets(List<string> keyList)
         {
@@ -74,8 +71,6 @@ namespace PlatformX.Secrets.Azure
 
             if (keyList.Count > 0)
             {
-                var secretClient = GetSecretClient(_endpointHelper.GetKeyVaultUrl(), _secretLoaderConfiguration.TenantId);
-
                 foreach (var item in keyList)
                 {
                     var keyName = FormatKeyName(item);
@@ -87,8 +82,8 @@ namespace PlatformX.Secrets.Azure
 
                     //try
                     //{
-                        var secret = secretClient.GetSecret(keyName);
-                        list.Add(item, secret.Value.Value);
+                        var secret = _secretClient.GetSecret(keyName);
+                        list.Add(item, secret);
                     //}
                     //catch (Exception ex)
                     //{
@@ -106,7 +101,6 @@ namespace PlatformX.Secrets.Azure
             throw new NotImplementedException();
         }
 
-        #region Save
         public void SaveSecret(string key, string value)
         {
             var vaultUrl = _endpointHelper.GetKeyVaultUrl();
@@ -130,8 +124,7 @@ namespace PlatformX.Secrets.Azure
 
             try
             {
-                var vault = GetSecretClient(vaultUrl, _secretLoaderConfiguration.TenantId);
-                vault.SetSecret(keyName, value);
+                _secretClient.SetSecret(keyName, value);
             }
             catch (Exception ex)
             {
@@ -139,8 +132,6 @@ namespace PlatformX.Secrets.Azure
                 _traceLogger.LogError(ex.Message);
             }
         }
-
-        #endregion
 
         public void DeleteSecret(string key)
         {
@@ -165,36 +156,13 @@ namespace PlatformX.Secrets.Azure
 
             try
             {
-                var vault = GetSecretClient(vaultUrl, _secretLoaderConfiguration.TenantId);
-                var deleteOp = vault.StartDeleteSecret(keyName);
-                var purgeOp = vault.PurgeDeletedSecret(keyName);
+                _secretClient.StartDeleteSecret(keyName);
+                _secretClient.PurgeDeletedSecret(keyName);
             }
             catch (Exception ex)
             {
                 _traceLogger.LogWarning($"Error delete key: {keyName}");
                 _traceLogger.LogError(ex.Message);
-            }
-        }
-
-        private SecretClient GetSecretClient(string vaultUrl, string tenantId)
-        {
-            if (string.IsNullOrEmpty(vaultUrl))
-            {
-                throw new ArgumentNullException(nameof(vaultUrl), $"{nameof(vaultUrl)} is null in GetSecretClient");
-            }
-
-            if (string.IsNullOrEmpty(tenantId))
-            {
-                throw new ArgumentNullException(nameof(tenantId), $"{nameof(tenantId)} is null in GetSecretClient");
-            }
-
-            if(_secretLoaderConfiguration.Environment == "local")
-            {
-                return new SecretClient(new Uri(vaultUrl), new VisualStudioCredential(new VisualStudioCredentialOptions { TenantId = tenantId }));
-            }
-            else
-            {
-                return new SecretClient(new Uri(vaultUrl), new DefaultAzureCredential(new DefaultAzureCredentialOptions { SharedTokenCacheTenantId = tenantId }));
             }
         }
 
