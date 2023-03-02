@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
+using System.Diagnostics.CodeAnalysis;
 
 namespace PlatformX.Secrets.NTesting
 {
+    [ExcludeFromCodeCoverage]
     public class TestHelper
     {
         public static IConfigurationRoot GetIConfigurationRoot(string outputPath)

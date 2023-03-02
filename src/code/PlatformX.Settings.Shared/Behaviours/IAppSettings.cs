@@ -1,5 +1,6 @@
 ﻿namespace PlatformX.Settings.Shared.Behaviours
 {
+   
     public interface IOrganisationSettings
     {
         bool GetBool(string key, string organisationName);

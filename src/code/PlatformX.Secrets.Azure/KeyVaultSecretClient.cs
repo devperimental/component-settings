@@ -1,11 +1,10 @@
-﻿using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
+﻿using Azure.Security.KeyVault.Secrets;
 using PlatformX.Secrets.Shared.Behaviours;
-using PlatformX.Secrets.Shared.Config;
-using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace PlatformX.Secrets.Azure
 {
+    [ExcludeFromCodeCoverage]
     public class KeyVaultSecretClient : ISecretClient
     {
         private readonly SecretClient _secretClient;

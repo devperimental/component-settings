@@ -4,11 +4,12 @@ using PlatformX.Secrets.Shared.Behaviours;
 using PlatformX.Settings.Helper;
 using PlatformX.Settings.Shared.Config;
 using PlatformX.Settings.Types;
-using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace PlatformX.Settings.NTesting
 {
-    public class SettingsHelperTest
+    [ExcludeFromCodeCoverage]
+    public class SettingsHelper_PortalSettingsTest
     {
         private string _portalName;
         private PortalConfiguration _portalConfiguration;

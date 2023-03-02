@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace PlatformX.Secrets.Shared.Behaviours
 {
     public interface ISecretClient

@@ -2,9 +2,11 @@ using Moq;
 using NUnit.Framework;
 using PlatformX.Secrets.Shared.Behaviours;
 using PlatformX.Settings.Types;
+using System.Diagnostics.CodeAnalysis;
 
 namespace PlatformX.Settings.NTesting
 {
+    [ExcludeFromCodeCoverage]
     public class ProtectedRoleConfigurationTest
     {
    
