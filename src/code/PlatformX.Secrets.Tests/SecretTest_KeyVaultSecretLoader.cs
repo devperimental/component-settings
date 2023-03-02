@@ -36,11 +36,21 @@ namespace PlatformX.Secrets.NTesting
         public void Init()
         {
 
-            _secretLoaderConfiguration ??=
-                TestHelper.GetConfiguration<SecretLoaderConfiguration>(TestContext.CurrentContext.TestDirectory, "SecretLoaderConfiguration");
-            
-            _endpointHelperConfiguration ??=
-                TestHelper.GetConfiguration<EndpointHelperConfiguration>(TestContext.CurrentContext.TestDirectory, "EndpointConfiguration");
+            _secretLoaderConfiguration = new SecretLoaderConfiguration
+            {
+                Environment = "dev",
+                Prefix = "dz",
+                TenantId = "tenant-id"
+            };
+
+            _endpointHelperConfiguration = new EndpointHelperConfiguration
+            {
+                Prefix = "dz",
+                Environment = "dev",
+                RoleKey = "mgmt",
+                Location = "syd",
+                Region = "au"
+            };
 
             _endpointHelper = new EndpointHelper(_endpointHelperConfiguration);
         }
