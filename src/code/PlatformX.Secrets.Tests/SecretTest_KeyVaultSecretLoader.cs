@@ -35,6 +35,7 @@ namespace PlatformX.Secrets.NTesting
         [SetUp]
         public void Init()
         {
+
             _secretLoaderConfiguration ??=
                 TestHelper.GetConfiguration<SecretLoaderConfiguration>(TestContext.CurrentContext.TestDirectory, "SecretLoaderConfiguration");
             
