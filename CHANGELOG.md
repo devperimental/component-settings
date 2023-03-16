@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/devperimental/component-settings/compare/v1.0.0...v1.1.0) (2023-03-16)
+
+
+### Features
+
+* Add Aws support ([8cbfcc4](https://github.com/devperimental/component-settings/commit/8cbfcc42fb7be873cf0ca6cee117ad385ec01cef))
+
 # 1.0.0-alpha-2.1 (2023-03-16)
 
 
