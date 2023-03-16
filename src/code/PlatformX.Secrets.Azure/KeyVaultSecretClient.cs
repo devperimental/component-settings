@@ -32,27 +32,5 @@ namespace PlatformX.Secrets.Azure
         {
             _secretClient.StartDeleteSecret(keyName);
         }
-
-        //private SecretClient GetSecretClient(string vaultUrl, string tenantId)
-        //{
-        //    if (string.IsNullOrEmpty(vaultUrl))
-        //    {
-        //        throw new ArgumentNullException(nameof(vaultUrl), $"{nameof(vaultUrl)} is null in GetSecretClient");
-        //    }
-
-        //    if (string.IsNullOrEmpty(tenantId))
-        //    {
-        //        throw new ArgumentNullException(nameof(tenantId), $"{nameof(tenantId)} is null in GetSecretClient");
-        //    }
-
-        //    if (_secretLoaderConfiguration.Environment == "local")
-        //    {
-        //        return new SecretClient(new Uri(vaultUrl), new VisualStudioCredential(new VisualStudioCredentialOptions { TenantId = tenantId }));
-        //    }
-        //    else
-        //    {
-        //        return new SecretClient(new Uri(vaultUrl), new DefaultAzureCredential(new DefaultAzureCredentialOptions { SharedTokenCacheTenantId = tenantId }));
-        //    }
-        //}
     }
 }
