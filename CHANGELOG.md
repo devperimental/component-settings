@@ -1,3 +1,10 @@
+## [1.1.1-alpha-3.1](https://github.com/devperimental/component-settings/compare/v1.1.0...v1.1.1-alpha-3.1) (2023-03-17)
+
+
+### Bug Fixes
+
+* result assignment ([bac5a7a](https://github.com/devperimental/component-settings/commit/bac5a7a65d9917b2309818744fea0405a2ba27e6))
+
 # [1.1.0](https://github.com/devperimental/component-settings/compare/v1.0.0...v1.1.0) (2023-03-16)
 
 
