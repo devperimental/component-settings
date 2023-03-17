@@ -22,7 +22,7 @@ namespace PlatformX.Secrets.Aws
 
             try
             {
-                var response = _secretsManagerCache.GetCachedSecret(keyName);
+                secretValue = _secretsManagerCache.GetSecretString(keyName).Result;
             }
             catch(Exception ex)
             {
