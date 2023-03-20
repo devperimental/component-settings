@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/devperimental/component-settings/compare/v1.1.1...v1.2.0) (2023-03-20)
+
+
+### Features
+
+* disable catch ([9ea9637](https://github.com/devperimental/component-settings/commit/9ea96377e89778363f78569fc183ac5bf548879a))
+
 # [1.2.0-alpha-4.1](https://github.com/devperimental/component-settings/compare/v1.1.0...v1.2.0-alpha-4.1) (2023-03-20)
 
 
