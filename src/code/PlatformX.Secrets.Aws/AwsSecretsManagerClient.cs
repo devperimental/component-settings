@@ -20,14 +20,14 @@ namespace PlatformX.Secrets.Aws
         {
             var secretValue = string.Empty;
 
-            try
-            {
+            //try
+            //{
                 secretValue = _secretsManagerCache.GetSecretString(keyName).Result;
-            }
-            catch(Exception ex)
-            {
-                _logger.LogError(ex, "Error occured retrieving secret {secretName}", keyName);
-            }
+            //}
+            //catch(Exception ex)
+            //{
+                //_logger.LogError(ex, "Error occured retrieving secret {secretName}", keyName);
+            //}
 
             return secretValue;
         }
