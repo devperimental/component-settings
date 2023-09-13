@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/devperimental/component-settings/compare/v1.2.0...v1.3.0) (2023-09-13)
+
+
+### Features
+
+* add secret creation ([bfee9dc](https://github.com/devperimental/component-settings/commit/bfee9dc4b4162c975cedad61f4fa53aea4360db3))
+
 # [1.2.0](https://github.com/devperimental/component-settings/compare/v1.1.1...v1.2.0) (2023-03-20)
 
 
