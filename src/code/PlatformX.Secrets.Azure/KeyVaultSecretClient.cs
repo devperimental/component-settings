@@ -1,6 +1,7 @@
 ﻿using Azure.Security.KeyVault.Secrets;
 using PlatformX.Secrets.Shared.Behaviours;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 
 namespace PlatformX.Secrets.Azure
 {
@@ -18,6 +19,11 @@ namespace PlatformX.Secrets.Azure
             return _secretClient.GetSecret(keyName).Value.Value;
         }
 
+        public Task<string> GetSecretAsync(string keyName)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public void PurgeDeletedSecret(string keyName)
         {
             _secretClient.PurgeDeletedSecret(keyName);
@@ -28,9 +34,19 @@ namespace PlatformX.Secrets.Azure
             _secretClient.SetSecret(keyName, value);
         }
 
+        public Task<bool> SetSecretAsync(string keyName, string value)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public void StartDeleteSecret(string keyName)
         {
             _secretClient.StartDeleteSecret(keyName);
+        }
+
+        bool ISecretClient.SetSecret(string keyName, string value)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
